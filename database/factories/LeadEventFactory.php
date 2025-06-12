@@ -17,17 +17,17 @@ class LeadEventFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    
+
     protected $model = LeadEvent::class;
 
     public function definition(): array
     {
         return [
-            'lead_id'       => Lead::inRandomOrder()->first()?->id ?? Lead::factory(),
-            'user_id'       => User::inRandomOrder()->first()?->id ?? User::factory(),
-            'event_type' => 'Call',
-            'details'       => 'Ok, I will follow up next week.',
-            'event_date' => now(),
+            'lead_id'       => Lead::factory(),
+            'user_id'       => User::factory(),
+            'event_type' => $this->faker->randomElement(['Call', 'Email', 'Meeting']),
+            'details'       => $this->faker->sentence,
+            'event_date' => $this->faker->dateTimeBetween('-30 days', 'now'),
         ];
     }
 }
