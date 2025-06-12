@@ -6,7 +6,7 @@ use App\Models\LeadEvent;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class LeadActivtySeeder extends Seeder
+class LeadEventSeeder extends Seeder
 {
     /**
      * Run the database seeds.
