@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             LeadSeeder::class,
             LeadNoteSeeder::class,
             LeadEventSeeder::class,
+            RoleAndPermissionSeeder::class,
         ]);
     }
 }

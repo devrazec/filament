@@ -18,8 +18,21 @@ DB_DATABASE=./database/database.sqlite
 
 # Setup SQLite
 
+- php artisan migrate:fresh --seed
+
+or
+
 - php artisan migrate:fresh
 - php artisan db:seed
+
+or
+
+- php artisan db:seed --class=LeadEventSeeder
+
+or
+
+php artisan migrate:rollback --path=database/migrations/2025_06_12_185508_create_lead_sources_table.php
+php artisan db:seed --class=LeadSourceSeeder
 
 # Install Filament
 
@@ -36,7 +49,7 @@ http://127.0.0.1:8080
 
 # Create Laravel Resource
 
-- Migration and Factory
+- Create Migration and Factory
 php artisan make:model User -mf
 php artisan make:model LeadSource -mf
 php artisan make:model LeadStatus -mf
@@ -44,7 +57,8 @@ php artisan make:model Lead -mf
 php artisan make:model LeadNote -mf
 php artisan make:model LeadEvent -mf
 
-
+- Create Factory
+php artisan make:factory RoleFactory
 
 - Create Seeder
 php artisan make:seeder UserSeeder
@@ -54,6 +68,8 @@ php artisan make:seeder LeadSeeder
 php artisan make:seeder LeadNoteSeeder
 php artisan make:seeder LeadActivtySeeder
 
+php artisan make:seeder RoleSeeder
+
 - Create Table
 php artisan make:migration create_lead_source_table
 php artisan make:migration create_lead_status_table
@@ -62,29 +78,79 @@ php artisan make:migration create_lead_note_table
 php artisan make:migration create_lead_activity_table
 
 - Database Schema
-database/migrations/2025_06_12_161804_create_lead_table.php
+database/migrations/
 
 - Define Fields and Relationships in the Model
-app/Models/Lead.php
+app/Models/
 
 - Populate the table and define factory for the model
-database/factories/LeadFactory.php
+database/factories/
+
+# Create Resource
+
+php artisan make:filament-resource User
+php artisan make:filament-resource LeadSource
+php artisan make:filament-resource LeadStatus
+php artisan make:filament-resource Lead
+php artisan make:filament-resource LeadNote
+php artisan make:filament-resource LeadEvent
+
+php artisan make:filament-resource Customer --view
+php artisan make:filament-resource Customer --soft-deletes
+
+php artisan make:filament-resource LeadSource --generate --soft-deletes --view
+php artisan make:filament-resource User --generate --soft-deletes --view
+php artisan make:filament-resource LeadEvent --generate --soft-deletes --view
+php artisan make:filament-resource LeadNote --generate --soft-deletes --view
+php artisan make:filament-resource LeadStatus --generate --soft-deletes --view
+php artisan make:filament-resource Lead --generate --soft-deletes --view
 
 
 
 
-php artisan make:filament-resource Leads
 
+php artisan optimize:clear
+php artisan filament:cache
 
-php artisan migrate
-php artisan migrate:fresh
-php artisan migrate:fresh --seed
-php artisan db:seed
-php artisan db:seed --class=LeadEventSeeder
-
+# Clean Cache
 
 php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
 php artisan route:clear
 composer dump-autoload
+
+# Install Permission Package
+
+composer require spatie/laravel-permission
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+hp artisan optimize:clear
+php artisan filament:cache
+php artisan migrate
+
+use Spatie\Permission\Traits\HasRoles;
+HasRoles
+
+
+php artisan make:seeder RoleAndPermissionSeeder
+php artisan db:seed --class=RoleAndPermissionSeeder
+
+composer require bezhansalleh/filament-shield
+php artisan vendor:publish --tag="filament-shield-config"
+php artisan shield:setup
+
+
+# Enable API
+php artisan install:api
+
+# Create Controller
+
+php artisan make:controller LeadSourceController --resource --api --model=LeadSource
+
+# Create Route
+
+Route::apiResource('categories', CategoryController::class);
+
+# Icons
+
+https://heroicons.dev/?strictJsx=true&exportComponent=true
